@@ -33,10 +33,12 @@ let tronWeb = null;
    初始化钱包（通用）
 ========================= */
 function initWallet() {
-  if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+  if (window.tronWeb) {
     tronWeb = window.tronWeb;
-    address.value = tronWeb.defaultAddress.base58;
-    return true;
+    if (tronWeb.defaultAddress && tronWeb.defaultAddress.base58) {
+      address.value = tronWeb.defaultAddress.base58;
+      return true;
+    }
   }
   return false;
 }
@@ -44,12 +46,38 @@ function initWallet() {
 /* =========================
    钱包连接（自动识别）
 ========================= */
-function connectWallet() {
-  if (initWallet()) {
-    const type = detectWallet();
-    status.value = `已连接钱包：${type}`;
+async function connectWallet() {
+  if (isWalletAvailable()) {
+    try {
+      await requestAccount();
+      if (initWallet()) {
+        const type = detectWallet();
+        status.value = `已连接钱包：${type}`;
+      } else {
+        status.value = "钱包未授权，请授权后重试";
+      }
+    } catch (e) {
+      console.error(e);
+      status.value = "连接失败";
+    }
   } else {
     alert("请在 TronLink / imToken / TP / OneKey 内打开");
+  }
+}
+
+/* =========================
+   检测钱包环境是否可用
+========================= */
+function isWalletAvailable() {
+  return window.tronWeb || window.$onekey;
+}
+
+/* =========================
+   请求账户授权
+========================= */
+async function requestAccount() {
+  if (window.tronWeb && window.tronWeb.request) {
+    await window.tronWeb.request({ method: 'tron_requestAccounts' });
   }
 }
 
@@ -57,12 +85,16 @@ function connectWallet() {
    钱包类型识别
 ========================= */
 function detectWallet() {
-  if (!window.tronWeb) return "unknown";
+  if (!window.tronWeb) {
+    if (window.$onekey) return "OneKey";
+    return "unknown";
+  }
 
   if (window.tronWeb.tronLink) return "TronLink";
   if (window.tronWeb.isTokenPocket) return "TokenPocket";
+  if (window.$onekey) return "OneKey";
 
-  return "imToken / OneKey";
+  return "imToken";
 }
 
 /* =========================

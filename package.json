@@ -1,0 +1,31 @@
+{
+  "name": "web3-wallet",
+  "version": "1.0.0",
+  "description": "Web3 Account Management with Vue and ethers.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tronweb3/tronwallet-adapter-walletconnect": "^3.0.3",
+    "@walletconnect/sign-client": "^2.23.9",
+    "@walletconnect/web3-provider": "^1.8.0",
+    "ethers": "^6.12.1",
+    "process": "^0.11.10",
+    "tronweb": "^5.3.5",
+    "vue": "^3.4.21"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@walletconnect/client": "^1.8.0",
+    "@walletconnect/utils": "^2.23.9",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.1",
+    "rollup-plugin-polyfill-node": "^0.13.0",
+    "stream-browserify": "^3.0.0",
+    "vite": "^5.2.0",
+    "vite-plugin-node-polyfills": "^0.26.0"
+  }
+}
